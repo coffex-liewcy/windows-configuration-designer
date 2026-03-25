@@ -10,13 +10,14 @@ $ProgressPreference = 'SilentlyContinue'
 do {
     $ping = Test-NetConnection '8.8.8.8' -InformationLevel Quiet
     if (!$ping) {
-        cls
-        'Wainting for network connection' | Out-Host
-        sleep -s 5
+        Clear-Host
+        'Waiting for network connection' | Out-Host
+        Start-Sleep -Seconds 5
     }
 } while (!$ping)
 $ProgressPreference = $ProgressPreference_bk
 
+# From oobe-setup.ps1 (only once)
 if ($first) {
     # setup windows update powershell module
     $nuget = Get-PackageProvider 'NuGet' -ListAvailable -ErrorAction SilentlyContinue
@@ -36,11 +37,12 @@ if ($first) {
 $updates = Get-WindowsUpdate
 
 if ($null -ne $updates) {
-    Install-WindowsUpdate -AcceptAll -Install -IgnoreReboot | select KB, Result, Title, Size
+    Install-WindowsUpdate -AcceptAll -Install -IgnoreReboot | Select-Object KB, Result, Title, Size
 }
 
 $status = Get-WURebootStatus -Silent
 
+# If reboot is required for Windows Update, setup RunOnce to execute this script again without -First parameter
 if ($status) {
     $setup_runonce = @{
         Path  = "HKLM:\Software\Microsoft\Windows\CurrentVersion\RunOnce"
@@ -50,10 +52,12 @@ if ($status) {
     New-ItemProperty @setup_runonce | Out-Null
     Restart-Computer
 }
+
+# Else proceed with desktop provisioning
 else {
 
-    # Confgiure ActiveSetup to import user registry with RunOnce
-    ni "HKLM:\SOFTWARE\Microsoft\Active Setup\Installed Components\ImportUserRegistry" | New-ItemProperty -Name "StubPath" -Value 'REG ADD "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce" /v ImportUserRegistry /d "REG IMPORT C:\ProgramData\provisioning\desktop-user-registry.reg" /f'
+    # Configure ActiveSetup to import user registry with RunOnce
+    New-Item -Path "HKLM:\SOFTWARE\Microsoft\Active Setup\Installed Components\ImportUserRegistry" -Force | New-ItemProperty -Name "StubPath" -Value 'REG ADD "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce" /v ImportUserRegistry /d "REG IMPORT C:\ProgramData\provisioning\desktop-user-registry.reg" /f'
     # Execute desktop-software-provisioning.ps1
     . "$($provisioning.FullName)\desktop-software-provisioning.ps1" -ProvisioningFolder $provisioning.FullName
 }

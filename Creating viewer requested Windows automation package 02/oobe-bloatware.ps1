@@ -2,6 +2,10 @@
 
 $app_packages = 
 "Microsoft.WindowsCamera",
+"Microsoft.Edge.GameAssist",
+"Microsoft.Windows.DevHome",
+"MicrosoftCorporationII.MicrosoftFamily",
+"MSTeams",
 "Clipchamp.Clipchamp",
 "Microsoft.WindowsAlarms",
 "Microsoft.549981C3F5F10", # Cortana
@@ -26,17 +30,20 @@ $app_packages =
 "Microsoft.GamingApp",
 "Microsoft.Windows.Ai.Copilot.Provider"
 
-Get-AppxProvisionedPackage -Online | ?{$_.DisplayName -in $app_packages} | Remove-AppxProvisionedPackage -Online -AllUser
+Get-AppxProvisionedPackage -Online | 
+    Where-Object { $_.DisplayName -in $app_packages } | 
+    Remove-AppxProvisionedPackage -Online -AllUser
 
 # Deploy start layout
 
+# Required start2.bin to be added to CommandFiles in WCD
 [System.IO.FileInfo]$start_layout = ".\start2.bin"
 
-ls "C:\Users\" -Attributes Directory -Force | ?{$_.FullName -notin $env:USERPROFILE, $env:PUBLIC -and $_.Name -notin "All Users", "Default User"} | %{
+Get-ChildItem "C:\Users\" -Attributes Directory -Force | Where-Object { $_.FullName -notin $env:USERPROFILE, $env:PUBLIC -and $_.Name -notin "All Users", "Default User" } | ForEach-Object {
 
     [System.IO.DirectoryInfo]$destination = "$($_.FullName)\AppData\Local\Packages\Microsoft.Windows.StartMenuExperienceHost_cw5n1h2txyewy\LocalState"
 
-    if(!$destination.Exists){
+    if (!$destination.Exists) {
         $destination.Create()
     }
 
@@ -45,13 +52,13 @@ ls "C:\Users\" -Attributes Directory -Force | ?{$_.FullName -notin $env:USERPROF
 
 # Prevent OneDrive from installing
 
-ni "HKLM:\SOFTWARE\Microsoft\Active Setup\Installed Components\DisableOneDrive" | New-ItemProperty -Name "StubPath" -Value 'REG DELETE "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v OneDriveSetup /f'
+New-Item "HKLM:\SOFTWARE\Microsoft\Active Setup\Installed Components\DisableOneDrive" | New-ItemProperty -Name "StubPath" -Value 'REG DELETE "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v OneDriveSetup /f'
 
 # Prevent Outlook (new) and Dev Home from installing
 
 "HKLM:\SOFTWARE\Microsoft\WindowsUpdate\Orchestrator\UScheduler_Oobe\DevHomeUpdate",
 "HKLM:\SOFTWARE\Microsoft\WindowsUpdate\Orchestrator\UScheduler_Oobe\OutlookUpdate",
 "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Orchestrator\UScheduler\OutlookUpdate",
-"HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Orchestrator\UScheduler\DevHomeUpdate" | %{
-    ri $_ -force
+"HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Orchestrator\UScheduler\DevHomeUpdate" | ForEach-Object {
+    Remove-Item $_ -Force
 }

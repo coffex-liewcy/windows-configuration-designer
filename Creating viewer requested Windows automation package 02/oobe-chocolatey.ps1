@@ -3,14 +3,14 @@ $packages =
 "googlechrome",
 "adobereader" -join " "
 
-$chocolatey_msi_file = "chocolatey-2.3.0.0.msi"
+$chocolatey_msi_file = "chocolatey-2.7.0.0.msi"
 
 $install_chocolatey = @{
-    FilePath         = '{0}\system32\msiexec.exe' -f $env:SystemRoot
-    ArgumentList     = '/i "{0}\{1}" /qn /norestart' -f (gl).path, $chocolatey_msi_file
-    NoNewWindow      = $true
-    PassThru         = $true
-    Wait             = $true
+    FilePath     = '{0}\system32\msiexec.exe' -f $env:SystemRoot
+    ArgumentList = '/i "{0}\{1}" /qn /norestart' -f (Get-Location).path, $chocolatey_msi_file
+    NoNewWindow  = $true
+    PassThru     = $true
+    Wait         = $true
 }
 
 Start-Process @install_chocolatey

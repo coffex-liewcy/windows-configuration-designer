@@ -2,6 +2,7 @@ param(
     [System.IO.DirectoryInfo]$ProvisioningFolder
 )
 
+<# M365 provisioning disabled
 $software_packages = 
 [PSCustomObject]@{
     Executable  = "{0}\setup.exe" -f "$($env:SystemRoot)\TEMP\m365"
@@ -35,10 +36,12 @@ foreach ($package in $software_packages) {
 
     Write-Host $p.exitcode
 }
+#>
 
 # Execute desktop-configure-taskbar.ps1, desktop-shortcuts.ps1, netplwiz
 . "$($ProvisioningFolder.FullName)\desktop-configure-taskbar.ps1" -ProvisioningFolder $ProvisioningFolder
-. "$($ProvisioningFolder.FullName)\desktop-shortcuts.ps1"
+# Not needed
+#. "$($ProvisioningFolder.FullName)\desktop-shortcuts.ps1"
 netplwiz
 
 Write-Host "All Done!" -ForegroundColor Green
