@@ -6,6 +6,10 @@ $app_packages =
 "Microsoft.Windows.DevHome",
 "MicrosoftCorporationII.MicrosoftFamily",
 "MSTeams",
+"Microsoft.XboxGamingOverlay",
+"Microsoft.XboxIdentityProvider",
+"Microsoft.XboxSpeechToTextOverlay",
+"Microsoft.GetHelp",
 "Clipchamp.Clipchamp",
 "Microsoft.WindowsAlarms",
 "Microsoft.549981C3F5F10", # Cortana
@@ -21,7 +25,6 @@ $app_packages =
 "Microsoft.People",
 "Microsoft.PowerAutomateDesktop",
 "MicrosoftCorporationII.QuickAssist",
-"Microsoft.ScreenSketch",
 "Microsoft.MicrosoftSolitaireCollection",
 "Microsoft.WindowsSoundRecorder",
 "Microsoft.MicrosoftStickyNotes",

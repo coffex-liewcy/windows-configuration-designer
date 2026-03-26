@@ -1,5 +1,4 @@
 $packages = 
-"zoom",
 "googlechrome",
 "adobereader" -join " "
 
