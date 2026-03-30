@@ -55,6 +55,11 @@ $settings =
     Name  = "DisablePrivacyExperience"
     Value = 1
 },
+[PSCustomObject]@{ # Use "Active Setup" to import desktop-icons.reg
+    Path  = "SOFTWARE\Microsoft\Active Setup\Installed Components\DesktopIcons"
+    Name  = "StubPath"
+    Value = 'reg import "{0}\desktop-icons.reg"' -f $provisioning.FullName
+},
 # --- NEW ENTRIES MOVED FROM desktop-configure-taskbar.ps1 ---
 [PSCustomObject]@{
     Path  = "SOFTWARE\Policies\Microsoft\Windows\Explorer"
