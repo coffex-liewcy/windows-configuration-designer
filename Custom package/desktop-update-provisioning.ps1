@@ -54,6 +54,7 @@ if ($status) {
 }
 
 # Else proceed with desktop provisioning
+# ActiveSetup under HKCU goes here
 else {
 
     # Configure ActiveSetup to import user registry with RunOnce

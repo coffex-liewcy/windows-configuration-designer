@@ -39,7 +39,6 @@ Get-AppxProvisionedPackage -Online |
 
 # Deploy start layout
 
-<# TEST
 # Required start2.bin to be added to CommandFiles in WCD
 [System.IO.FileInfo]$start_layout = ".\start2.bin"
 
@@ -53,7 +52,6 @@ Get-ChildItem "C:\Users\" -Attributes Directory -Force | Where-Object { $_.FullN
 
     $start_layout.CopyTo("$($destination)\start2.bin", $true)
 }
-#>
 
 # Prevent OneDrive from installing
 

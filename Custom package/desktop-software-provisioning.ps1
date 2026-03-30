@@ -39,7 +39,7 @@ foreach ($package in $software_packages) {
 #>
 
 # Execute desktop-configure-taskbar.ps1, desktop-shortcuts.ps1, netplwiz
-. "$($ProvisioningFolder.FullName)\desktop-configure-taskbar.ps1" -ProvisioningFolder $ProvisioningFolder
+#. "$($ProvisioningFolder.FullName)\desktop-configure-taskbar.ps1" -ProvisioningFolder $ProvisioningFolder
 # Not needed
 #. "$($ProvisioningFolder.FullName)\desktop-shortcuts.ps1"
 netplwiz

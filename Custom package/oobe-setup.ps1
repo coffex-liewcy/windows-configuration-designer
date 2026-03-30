@@ -5,9 +5,11 @@
 $provisioning = New-Item "$($env:ProgramData)\provisioning" -ItemType Directory -Force
 
 # Execute oobe scripts
+. .\oobe-powersettings.ps1
 . .\oobe-chocolatey.ps1
 . .\oobe-associations.ps1 -ProvisioningFolder $provisioning
 . .\oobe-bloatware.ps1
+. .\oobe-chrome-extensions.ps1
 
 # Move files from provisioning package to provisioning folder
 Get-ChildItem -File | Where-Object { $_.Name -notlike "oobe-*" -and $_.Name -notlike "chocolatey*"  -and $_.Name -ne "start2.bin"} | ForEach-Object {
@@ -35,6 +37,8 @@ $copy_m365 = @{
 Copy-Item @copy_m365
 #>
 
+# --- Machine-wide configuration (HKLM\SOFTWARE\Policies) goes here ---
+
 $settings =
 [PSCustomObject]@{ # Execute desktop-provisioning.ps1
     Path  = "SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce"
@@ -50,6 +54,18 @@ $settings =
     Path  = "SOFTWARE\Policies\Microsoft\Windows\OOBE"
     Name  = "DisablePrivacyExperience"
     Value = 1
+},
+# --- NEW ENTRIES MOVED FROM desktop-configure-taskbar.ps1 ---
+[PSCustomObject]@{
+    Path  = "SOFTWARE\Policies\Microsoft\Windows\Explorer"
+    Name  = "StartLayoutFile"
+    Value = "{0}\desktop-taskbar.xml" -f $provisioning.FullName
+    Type  = [Microsoft.Win32.RegistryValueKind]::ExpandString
+},
+[PSCustomObject]@{
+    Path  = "SOFTWARE\Policies\Microsoft\Windows\Explorer"
+    Name  = "LockedStartLayout"
+    Value = 1
 } | Group-Object Path
 
 foreach ($setting in $settings) {
@@ -57,8 +73,15 @@ foreach ($setting in $settings) {
     if ($null -eq $registry) {
         $registry = [Microsoft.Win32.Registry]::LocalMachine.CreateSubKey($setting.Name, $true)
     }
+    
+    # Updated loop to handle Registry Value Types
     $setting.Group | ForEach-Object {
-        $registry.SetValue($_.name, $_.value)
+        if ($_.Type) {
+            $registry.SetValue($_.Name, $_.Value, $_.Type)
+        } else {
+            $registry.SetValue($_.Name, $_.Value)
+        }
     }
+
     $registry.Dispose()
 }
