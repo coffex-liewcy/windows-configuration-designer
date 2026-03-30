@@ -42,7 +42,8 @@ Get-AppxProvisionedPackage -Online |
 # Required start2.bin to be added to CommandFiles in WCD
 [System.IO.FileInfo]$start_layout = ".\start2.bin"
 
-Get-ChildItem "C:\Users\" -Attributes Directory -Force | Where-Object { $_.FullName -notin $env:USERPROFILE, $env:PUBLIC -and $_.Name -notin "All Users", "Default" } | ForEach-Object {
+# This line filters out current user, public, hidden system profiles to target C:\Users\Default only
+Get-ChildItem "C:\Users\" -Attributes Directory -Force | Where-Object { $_.FullName -notin $env:USERPROFILE, $env:PUBLIC -and $_.Name -notin "All Users", "Default User" } | ForEach-Object {
 
     [System.IO.DirectoryInfo]$destination = "$($_.FullName)\AppData\Local\Packages\Microsoft.Windows.StartMenuExperienceHost_cw5n1h2txyewy\LocalState"
 

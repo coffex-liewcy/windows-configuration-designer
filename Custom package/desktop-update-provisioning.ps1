@@ -33,6 +33,7 @@ if ($first) {
     }
 }
 
+<# COMMENT TO SKIP WINDOWS UPDATES DURING TESTING
 # install windows updates
 $updates = Get-WindowsUpdate
 
@@ -52,13 +53,14 @@ if ($status) {
     New-ItemProperty @setup_runonce | Out-Null
     Restart-Computer
 }
+#>
 
 # Else proceed with desktop provisioning
 # ActiveSetup under HKCU goes here
-else {
+#else { #UNCOMMENT LATER
 
     # Configure ActiveSetup to import user registry with RunOnce
     New-Item -Path "HKLM:\SOFTWARE\Microsoft\Active Setup\Installed Components\ImportUserRegistry" -Force | New-ItemProperty -Name "StubPath" -Value 'REG ADD "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce" /v ImportUserRegistry /d "REG IMPORT C:\ProgramData\provisioning\desktop-user-registry.reg" /f'
     # Execute desktop-software-provisioning.ps1
     . "$($provisioning.FullName)\desktop-software-provisioning.ps1" -ProvisioningFolder $provisioning.FullName
-}
+#} #UNCOMMENT LATER
