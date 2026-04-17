@@ -41,11 +41,8 @@ Copy-Item @copy_m365
 Remove-Item "$($env:PUBLIC)\Desktop\Microsoft Edge.lnk"
 
 # Disable BitLocker for each volume
-$BitLockerStatus = Get-BitLockerVolume
-$BitLockerStatus | ForEach-Object {
-    if ($_.VolumeStatus -eq 'FullyDecrypted') {
-        Disable-BitLocker -MountPoint $_.MountPoint
-    }
+Get-BitLockerVolume | Where-Object { $_.VolumeStatus -eq 'FullyEncrypted' } | ForEach-Object {
+    Disable-BitLocker -MountPoint $_.MountPoint
 }
 
 # --- Machine-wide configuration (HKLM\SOFTWARE\Policies) goes here ---

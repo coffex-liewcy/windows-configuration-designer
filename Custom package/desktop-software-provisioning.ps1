@@ -42,7 +42,42 @@ foreach ($package in $software_packages) {
 #. "$($ProvisioningFolder.FullName)\desktop-configure-taskbar.ps1" -ProvisioningFolder $ProvisioningFolder
 # Not needed
 #. "$($ProvisioningFolder.FullName)\desktop-shortcuts.ps1"
-netplwiz
+#netplwiz
 
+# Command line menu
+do {
+    "Available actions:",
+    "   1 - Create local admin account",
+    "   2 - Create local user",
+    "   3 - Change computer name",
+    "   4 - Restart computer",
+    "   0 - Close script" | Out-Host
+    $selected = Read-Host "Enter selection"
+    switch ($selected) {
+        1 {
+            Get-Credential | Select-Object @{n = 'Name'; e = { $_.UserName } },
+            @{n = 'Password'; e = { $_.Password } } | New-LocalUser -PasswordNeverExpires | Add-LocalGroupMember -Group "Administrators"
+            break
+        }
+        2 {
+            Get-Credential | Select-Object @{n = 'Name'; e = { $_.UserName } },
+            @{n = 'Password'; e = { $_.Password } } | New-LocalUser -PasswordNeverExpires
+            break
+        }
+        3 {
+            Read-Host "Enter computer name" | Select-Object @{n = 'NewName'; e = { $_ } } | Rename-Computer
+            break
+        }
+        4 {
+            Restart-Computer
+            break
+        }
+        default {
+            Write-Host "Invalid selection. Please try again." -ForegroundColor Red
+        }
+    }
+}while ($selected -ne 0)
+
+# best place to add more actions
 Write-Host "All Done!" -ForegroundColor Green
 Read-Host
