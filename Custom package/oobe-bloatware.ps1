@@ -24,7 +24,7 @@ $app_packages =
 "Microsoft.OutlookForWindows",
 "Microsoft.People",
 "Microsoft.PowerAutomateDesktop",
-"MicrosoftCorporationII.QuickAssist",
+# "MicrosoftCorporationII.QuickAssist",
 "Microsoft.MicrosoftSolitaireCollection",
 "Microsoft.WindowsSoundRecorder",
 "Microsoft.MicrosoftStickyNotes",

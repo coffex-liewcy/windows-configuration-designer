@@ -37,6 +37,17 @@ $copy_m365 = @{
 Copy-Item @copy_m365
 #>
 
+# Remove Microsoft Edge shortcut from desktop
+Remove-Item "$($env:PUBLIC)\Desktop\Microsoft Edge.lnk"
+
+# Disable BitLocker for each volume
+$BitLockerStatus = Get-BitLockerVolume
+$BitLockerStatus | ForEach-Object {
+    if ($_.VolumeStatus -eq 'FullyDecrypted') {
+        Disable-BitLocker -MountPoint $_.MountPoint
+    }
+}
+
 # --- Machine-wide configuration (HKLM\SOFTWARE\Policies) goes here ---
 
 $settings =
