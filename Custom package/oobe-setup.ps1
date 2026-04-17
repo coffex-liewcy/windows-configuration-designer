@@ -37,6 +37,9 @@ $copy_m365 = @{
 Copy-Item @copy_m365
 #>
 
+# Join Workgroup
+Add-Computer -WorkgroupName "MYPJCOFFEX"
+
 # Remove Microsoft Edge shortcut from desktop
 Remove-Item "$($env:PUBLIC)\Desktop\Microsoft Edge.lnk"
 
