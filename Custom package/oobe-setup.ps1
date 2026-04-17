@@ -61,7 +61,7 @@ $settings =
     Value = 0
     Name  = "AllowNewsAndInterests"
 },
-[PSCustomObject]@{ # Skip privacy experiance
+[PSCustomObject]@{ # Skip privacy experience
     Path  = "SOFTWARE\Policies\Microsoft\Windows\OOBE"
     Name  = "DisablePrivacyExperience"
     Value = 1
