@@ -46,7 +46,7 @@
 - [x] Set up computer name
 - [x] Uninstall bloatware (appx-package)
 - [x] Configure Chrome extension
-- [ ] Remove Edge shortcut from Public Desktop (gci public desktop | where filter | ri)
+- [x] Remove Edge shortcut from Public Desktop (gci public desktop | where filter | ri)
 - [x] Add This PC desktop icon (in NewStartPanel)
 - [ ] (For some users) Pin Classic Outlook
 	- [ ] Using <taskbar:DesktopApp DesktopApplicationID="Microsoft.Office.OUTLOOK.EXE.15" />
