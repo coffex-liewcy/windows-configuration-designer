@@ -67,7 +67,6 @@ $settings =
     Path  = "SOFTWARE\Policies\Microsoft\EdgeUpdate"
     Name  = "CreateDesktopShortcutDefault"
     Value = 0
-    Type  = [Microsoft.Win32.RegistryValueKind]::DWord
 },
 [PSCustomObject]@{ # Skip privacy experience
     Path  = "SOFTWARE\Policies\Microsoft\Windows\OOBE"
