@@ -3,7 +3,7 @@ $packages =
 "adobereader",
 "googledrive",
 "slack",
-#"k-litecodecpack-standard",
+"k-litecodecpack-standard",
 #"vlc",
 #"hp-universal-print-driver-pcl",     #link not working
 "7zip" -join " "

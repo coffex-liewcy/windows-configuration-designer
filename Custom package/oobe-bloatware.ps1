@@ -31,7 +31,10 @@ $app_packages =
 "Microsoft.BingWeather",
 "Microsoft.Xbox.TCUI",
 "Microsoft.GamingApp",
-"Microsoft.Windows.Ai.Copilot.Provider"
+"Microsoft.Windows.Ai.Copilot.Provider",
+"Microsoft.MixedReality.Portal",
+"MicrosoftTeams",
+"Microsoft.XboxGameOverlay"
 
 Get-AppxProvisionedPackage -Online | 
     Where-Object { $_.DisplayName -in $app_packages } | 
