@@ -1,6 +1,11 @@
 $packages = 
 "googlechrome",
-#"adobereader",
+"adobereader",
+"googledrive",
+"slack",
+"k-litecodecpack-standard",
+#"vlc",
+#"hp-universal-print-driver-pcl",     #link not working
 "7zip" -join " "
 
 $chocolatey_msi_file = "chocolatey-2.7.0.0.msi"
