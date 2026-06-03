@@ -47,7 +47,7 @@ foreach ($package in $software_packages) {
 # Command line menu
 do {
     "Available actions:",
-    "   1 - Create local admin account",
+    "   1 - Set password for itsupport",
     "   2 - Create local user",
     "   3 - Change computer name",
     "   4 - Restart computer",
@@ -55,8 +55,9 @@ do {
     $selected = Read-Host "Enter selection"
     switch ($selected) {
         1 {
-            Get-Credential | Select-Object @{n = 'Name'; e = { $_.UserName } },
-            @{n = 'Password'; e = { $_.Password } } | New-LocalUser -PasswordNeverExpires | Add-LocalGroupMember -Group "Administrators"
+            $Password = Read-Host -Prompt "Enter password for itsupport account" -AsSecureString 
+            $UserAccount = Get-LocalUser -Name "itsupport"
+            $UserAccount | Set-LocalUser -Password $Password -PasswordNeverExpires $true
             break
         }
         2 {

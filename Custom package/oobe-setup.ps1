@@ -41,7 +41,9 @@ Copy-Item @copy_m365
 Add-Computer -WorkgroupName "MYPJCOFFEX"
 
 # Remove Microsoft Edge shortcut from desktop
-Remove-Item "$($env:PUBLIC)\Desktop\Microsoft Edge.lnk"
+Remove-Item "$($env:PUBLIC)\Desktop\Microsoft Edge.lnk" -ErrorAction SilentlyContinue
+Get-ChildItem -Path "$env:PUBLIC\Desktop" -Filter "*Edge*.lnk" -ErrorAction SilentlyContinue | Remove-Item -Force
+
 
 # Disable BitLocker for each volume
 Get-BitLockerVolume | Where-Object { $_.VolumeStatus -eq 'FullyEncrypted' } | ForEach-Object {
@@ -60,6 +62,12 @@ $settings =
     Path  = "SOFTWARE\Policies\Microsoft\Dsh"
     Value = 0
     Name  = "AllowNewsAndInterests"
+},
+[PSCustomObject]@{ # Prevent Edge from creating desktop shortcut on install/update
+    Path  = "SOFTWARE\Policies\Microsoft\EdgeUpdate"
+    Name  = "CreateDesktopShortcutDefault"
+    Value = 0
+    Type  = [Microsoft.Win32.RegistryValueKind]::DWord
 },
 [PSCustomObject]@{ # Skip privacy experience
     Path  = "SOFTWARE\Policies\Microsoft\Windows\OOBE"
