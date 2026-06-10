@@ -41,7 +41,7 @@ Copy-Item @copy_m365
 Add-Computer -WorkgroupName "MYPJCOFFEX"
 
 # Remove Microsoft Edge shortcut from desktop
-Remove-Item "$($env:PUBLIC)\Desktop\Microsoft Edge.lnk" -ErrorAction SilentlyContinue
+# Remove-Item "$($env:PUBLIC)\Desktop\Microsoft Edge.lnk" -ErrorAction SilentlyContinue
 Get-ChildItem -Path "$env:PUBLIC\Desktop" -Filter "*Edge*.lnk" -ErrorAction SilentlyContinue | Remove-Item -Force
 
 
@@ -68,6 +68,13 @@ $settings =
     Name  = "CreateDesktopShortcutDefault"
     Value = 0
 },
+<#
+[PSCustomObject]@{ # Force delete system-level and user-level Desktop Shortcuts
+    Path  = "SOFTWARE\Policies\Microsoft\EdgeUpdate"
+    Name  = "RemoveDesktopShortcutDefault"
+    Value = 2
+}
+#>
 [PSCustomObject]@{ # Skip privacy experience
     Path  = "SOFTWARE\Policies\Microsoft\Windows\OOBE"
     Name  = "DisablePrivacyExperience"

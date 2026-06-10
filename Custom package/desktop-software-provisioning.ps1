@@ -61,17 +61,23 @@ do {
             break
         }
         2 {
-            Get-Credential | Select-Object @{n = 'Name'; e = { $_.UserName } },
+            $NewUser = Get-Credential | Select-Object @{n = 'Name'; e = { $_.UserName } },
             @{n = 'Password'; e = { $_.Password } } | New-LocalUser -PasswordNeverExpires
+            $NewUser | Add-LocalGroupMember -Group "Users"
             break
         }
         3 {
-            Read-Host "Enter computer name" | Select-Object @{n = 'NewName'; e = { $_ } } | Rename-Computer
+            $current_name = $env:COMPUTERNAME
+            $new_name = Read-Host "Enter new computer name (current name: $current_name)"
+            $new_name | Select-Object @{n = 'NewName'; e = { $_ } } | Rename-Computer
             break
         }
         4 {
             Restart-Computer
             break
+        }
+        0 {
+            Write-Host "Closing script..." -ForegroundColor Green
         }
         default {
             Write-Host "Invalid selection. Please try again." -ForegroundColor Red
@@ -80,5 +86,6 @@ do {
 }while ($selected -ne 0)
 
 # best place to add more actions
+# Add-Computer -WorkgroupName "MYPJCOFFEX"
 Write-Host "All Done!" -ForegroundColor Green
 Read-Host
