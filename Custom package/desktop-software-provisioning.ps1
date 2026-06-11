@@ -86,6 +86,6 @@ do {
 }while ($selected -ne 0)
 
 # best place to add more actions
-# Add-Computer -WorkgroupName "MYPJCOFFEX"
+
 Write-Host "All Done!" -ForegroundColor Green
 Read-Host
