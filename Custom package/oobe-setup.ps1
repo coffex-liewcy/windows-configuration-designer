@@ -46,7 +46,7 @@ Get-ChildItem -Path "$env:PUBLIC\Desktop" -Filter "*Edge*.lnk" -ErrorAction Sile
 
 
 # Disable BitLocker for each volume
-Get-BitLockerVolume | Where-Object { $_.VolumeStatus -eq 'FullyEncrypted' } | ForEach-Object {
+Get-BitLockerVolume | Where-Object { $_.VolumeStatus -ne 'FullyDecrypted' } | ForEach-Object {
     Disable-BitLocker -MountPoint $_.MountPoint
 }
 
