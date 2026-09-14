@@ -12,21 +12,68 @@ to the first logon via `RunOnce` and `Active Setup`.
 
 ---
 
-## Build inputs
+## Building the package
 
-These files are **not in the repo** and must be added to *CommandFiles* in WCD
-alongside the scripts:
+Run the build script. It generates `customizations.xml` and builds the `.ppkg` with
+the Windows Configuration Designer command-line tool, so there is no need to assemble
+the project by hand in the WCD GUI:
+
+```powershell
+.\build-ppkg.ps1
+```
+
+Output lands in `build\CoffexProvisioning.ppkg` (about 5.7 MB). Both `build\` and the
+generated `customizations.xml` are gitignored.
+
+Requires Windows Configuration Designer from the Microsoft Store - the script locates
+`ICD.exe` inside the Store app itself.
+
+### Build inputs
+
+Both binaries are committed alongside the scripts. If either ever needs replacing:
 
 | File | Where to get it |
 |---|---|
-| `chocolatey-2.7.0.0.msi` | <https://github.com/chocolatey/choco/releases> (the version is hardcoded in `oobe-chocolatey.ps1`) |
+| `chocolatey-2.7.0.0.msi` | <https://github.com/chocolatey/choco/releases> (the version is hardcoded in `oobe-chocolatey.ps1`, so update both together) |
 | `start2.bin` | Build a Start menu by hand, then copy from `%LOCALAPPDATA%\Packages\Microsoft.Windows.StartMenuExperienceHost_cw5n1h2txyewy\LocalState\` |
 
-In WCD, set the package to run:
+To add or remove a file from the package, edit the `$PayloadFiles` list at the top of
+`build-ppkg.ps1`. The list deliberately excludes `README.md` so internal documentation
+is not copied onto client machines by `oobe-setup.ps1`.
 
-```powershell
-powershell.exe -ExecutionPolicy Bypass -File oobe-setup.ps1
-```
+### Three traps in the ICD command line
+
+Worth knowing before you edit the build, because none of them announce themselves:
+
+1. **`ICD.exe` reports success for an empty package.** Omit or mis-specify the payload
+   and it still prints *"The package was successfully built"* and exits 0 - producing a
+   ~6 KB `.ppkg` that skips OOBE and then does nothing at all. `build-ppkg.ps1` fails
+   the build if the output is under 1 MB. Always sanity-check the size.
+2. **`CommandFiles` is a collection, and paths must be absolute.** Relative paths are
+   accepted and silently discarded. The correct shape is:
+   ```xml
+   <CommandFiles>
+     <CommandFile Name="oobe-setup.ps1">C:\absolute\path\oobe-setup.ps1</CommandFile>
+   </CommandFiles>
+   ```
+3. **`/StoreFile` is effectively mandatory, and ICD cannot parse spaces.** Without
+   `Microsoft-Desktop-Provisioning.dat` it only knows Common settings and rejects
+   `OOBE` with *"'OOBE' is not a valid child node for /"*. Any argument containing a
+   space fails with *"Command-line has too many parameters"*, which is why the script
+   stages the build under `%TEMP%` and moves the result back - this folder's name has
+   spaces in it.
+
+### Testing in a VM
+
+`build-ppkg.ps1` produces only the `.ppkg`. To get it into a VM, wrap it in an ISO and
+attach that as a second CD/DVD drive, then at the OOBE region screen press the Windows
+key five times to reach the provisioning page.
+
+Test both with and without a network connection. On a machine with no network during
+Stage 1, `oobe-chocolatey.ps1` fails silently - it never checks an exit code - and
+provisioning continues to completion, leaving a machine that looks provisioned but has
+none of the software and default app associations pointing at applications that were
+never installed.
 
 ---
 

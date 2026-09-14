@@ -3,3 +3,7 @@ run.ps1
 README_old.md
 */meta.txt
 _*
+
+# WCD build output and generated project file
+Custom Coffex package/build/
+Custom Coffex package/customizations.xml
