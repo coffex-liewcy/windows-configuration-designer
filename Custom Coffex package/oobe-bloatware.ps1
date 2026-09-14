@@ -59,7 +59,7 @@ Get-ChildItem "C:\Users\" -Attributes Directory -Force | Where-Object { $_.FullN
 
 # Prevent OneDrive from installing
 
-New-Item "HKLM:\SOFTWARE\Microsoft\Active Setup\Installed Components\DisableOneDrive" | New-ItemProperty -Name "StubPath" -Value 'REG DELETE "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v OneDriveSetup /f'
+New-Item -Path "HKLM:\SOFTWARE\Microsoft\Active Setup\Installed Components\DisableOneDrive" -Force | New-ItemProperty -Force -Name "StubPath" -Value 'REG DELETE "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v OneDriveSetup /f'
 
 # Prevent Outlook (new) and Dev Home from installing
 
@@ -67,5 +67,5 @@ New-Item "HKLM:\SOFTWARE\Microsoft\Active Setup\Installed Components\DisableOneD
 "HKLM:\SOFTWARE\Microsoft\WindowsUpdate\Orchestrator\UScheduler_Oobe\OutlookUpdate",
 "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Orchestrator\UScheduler\OutlookUpdate",
 "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate\Orchestrator\UScheduler\DevHomeUpdate" | ForEach-Object {
-    Remove-Item $_ -Force
+    Remove-Item $_ -Force -ErrorAction SilentlyContinue
 }
